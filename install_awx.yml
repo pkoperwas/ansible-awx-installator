@@ -77,4 +77,4 @@
       debug:
         msg: 
           - "You have to set fake DNS name tower in your /etc/hosts to your linux IP" 
-          - "Please open your browser and go to the site http://awx/#/login login: admin + password: {{ passwd_output.stdout }}"          
+          - "Please open your browser and go to the site http://tower/#/login login: admin + password: {{ passwd_output.stdout }}"          
