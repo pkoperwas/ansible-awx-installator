@@ -1,0 +1,80 @@
+- name: Install AWX
+  hosts: localhost
+  gather_facts: false
+  ignore_errors: True  
+  tasks:
+
+    - name: Disable SELINUX
+      ansible.builtin.raw: sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config && setenforce 0
+
+    - name: Install k3s
+      ansible.builtin.raw: curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+
+    - name: Install packages
+      dnf:
+        name: git, make, jq
+        state: latest
+
+    - name: Clone awx-operator repo
+      ansible.builtin.git:
+        repo: https://github.com/ansible/awx-operator.git
+        dest: /root/awx-operator
+
+    - name: Check latest relase of awx-operator
+      ansible.builtin.raw: curl -s https://api.github.com/repos/ansible/awx-operator/releases/latest | grep tag_name | cut -d '"' -f 4
+      register: version_output
+
+    - name: Checkout latest version awx-operator
+      ansible.builtin.git:
+        repo: https://github.com/ansible/awx-operator.git
+        version: "{{ version_output.stdout }}" 
+        dest: /root/awx-operator
+
+    - name: Create awx namespace @ k3s
+      ansible.builtin.raw: kubectl create ns awx
+
+    - name: Set context @ k3s
+      ansible.builtin.raw: kubectl config set-context --current --namespace=awx
+
+    - name: Make deploy awx-operator
+      ansible.builtin.raw: export NAMESPACE=awx && cd /root/awx-operator && make deploy
+
+    - name: Waitng 3 minutes for awx deployment
+      ansible.builtin.pause:
+        minutes: 3
+
+    - name: Create Static data PVC
+      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/public-static-pvc.yaml -n awx
+
+    - name: Create AWX Instance deployment 
+      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-instance-deployment.yml -n awx
+
+    - name: Replace AWX logo to Ansible Automation Platform
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "favicon.ico" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/favicon.ico"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "logo-header.svg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/logo-header.svg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "logo-login.svg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/logo-login.svg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_2000.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_2000.jpg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_576.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_576.jpg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_576@2x.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_576@2x.jpg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_768.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_768.jpg"' \;
+      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_768@2x.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_768@2x.jpg"' \;
+
+    - name: Modify traefik instance for ingresss traffic http vhost tower
+      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-traefik-ingress.yml        
+
+    - name: Open http port on  Firewalld
+      firewalld:
+        port: 80/tcp
+        permanent: yes
+        immediate: yes
+        state: enabled
+
+    - name: Check admin password for awx gui
+      ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
+      register: passwd_output
+
+    - name: Installation summary 
+      debug:
+        msg: 
+          - "You have to set fake DNS name tower in your /etc/hosts to your linux IP" 
+          - "Please open your browser and go to the site http://awx/#/login login: admin + password: {{ passwd_output.stdout }}"          
