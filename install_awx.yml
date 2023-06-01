@@ -50,14 +50,7 @@
       ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-instance-deployment.yml -n awx
 
     - name: Replace AWX logo to Ansible Automation Platform
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "favicon.ico" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/favicon.ico"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "logo-header.svg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/logo-header.svg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "logo-login.svg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/logo-login.svg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_2000.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_2000.jpg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_576.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_576.jpg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_576@2x.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_576@2x.jpg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_768.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_768.jpg"' \;
-      ansible.builtin.raw: find /var/lib/rancher/k3s/agent/containerd/ -name "pfbg_768@2x.jpg" -exec sh -c 'rm "{}" && wget -q -O "{}" "https://github.com/pkoperwas/awx-installator/raw/main/img/pfbg_768@2x.jpg"' \;
+      ansible.builtin.raw: curl -sfL https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx2tower.sh | sh -s -
 
     - name: Modify traefik instance for ingresss traffic http vhost tower
       ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-traefik-ingress.yml        
