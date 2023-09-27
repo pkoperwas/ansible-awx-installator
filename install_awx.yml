@@ -4,9 +4,6 @@
   ignore_errors: True  
   tasks:
 
-    - name: Disable SELINUX
-      ansible.builtin.raw: sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config && setenforce 0
-
     - name: Install k3s
       ansible.builtin.raw: curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
 
