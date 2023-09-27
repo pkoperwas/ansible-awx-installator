@@ -63,6 +63,6 @@
     - name: Installation summary 
       debug:
         msg: 
-          - "You have to set fake DNS name tower in your /etc/hosts to your linux IP" 
           - "Please open your browser and go to the site http://ansible.local/#/login login: admin + password: {{ passwd_output.stdout }}"          
+          - "Your desktop must resolve FQDN ansible.local to your server IP address, you can fake it on linux/windows hosts file"
           - "If page doesn't load and there's bad gateway info its a good sign, you have to wait a few minutes for final deployment"
