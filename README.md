@@ -8,7 +8,7 @@ AWX Operator 2.6.0 & AWX 23.2.0
 
 Usage:
 
-yum install ansible-core (you need ansible-playbok to run this installator)
+yum -y install ansible-core git
 
 git clone https://github.com/pkoperwas/Ansible-AWX-installator.git
 
