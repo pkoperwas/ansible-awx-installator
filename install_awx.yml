@@ -55,16 +55,6 @@
     - name: Modify traefik instance for ingresss traffic http vhost tower
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
 
-    - name: Install ansible.posix for firewalld module
-      ansible.builtin.raw: ansible-galaxy collection install ansible.posix
-
-    - name: Open http port on  Firewalld
-      ansible.posix.firewalld:
-        service: http
-        permanent: true
-        immediate: true
-        state: enabled
-
     - name: Waitng 3 minutes for deployment...
       ansible.builtin.pause:
         minutes: 3
