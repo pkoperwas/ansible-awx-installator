@@ -50,7 +50,7 @@
       ansible.builtin.raw: kubectl apply -f awx-instance-deployment.yml -n awx
 
     - name: Replace AWX logo to Ansible Automation Platform
-      ansible.builtin.raw: curl -sfL awx-installator/main/awx2tower.sh | sh -s -
+      ansible.builtin.raw: sh awx2tower.sh
 
     - name: Modify traefik instance for ingresss traffic http vhost tower
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
