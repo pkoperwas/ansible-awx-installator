@@ -7,7 +7,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
-    - host: ansible
+    - host: ansible.local
       http:
         paths:
           - path: /
