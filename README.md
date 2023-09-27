@@ -11,3 +11,6 @@ git clone https://github.com/pkoperwas/Ansible-AWX-installator.git
 cd Ansible-AWX-installator
 
 ansible-playbook install_awx.yml 
+
+
+![Screenshot](awx.png)
