@@ -2,13 +2,19 @@
 
 Based on Lightweight Kubernetes k3s engine.
 
-Tested on RHEL9 without selinux enabled.
+Tested on RHEL9
 
-AWX Operator 2.2.1 & AWX 22.1.0 
+AWX Operator 2.6.0 & AWX 23.2.0 
 
-Just download install_awx.yml or clone repo and run 
+Usage:
 
-ansible-playbook install_awx.yml
+yum install ansible-core (you need ansible-playbok to run this installator)
+
+git clone https://github.com/pkoperwas/Ansible-AWX-installator.git
+
+cd Ansible-AWX-installator
+
+ansible-playbook install_awx.yml 
 
 
 
