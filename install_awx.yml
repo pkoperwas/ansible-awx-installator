@@ -52,9 +52,9 @@
     - name: Modify traefik instance for ingresss traffic http vhost tower
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
 
-    - name: Waitng 3 minutes for deployment...
+    - name: Waitng 2 minutes for deployment...
       ansible.builtin.pause:
-        minutes: 3
+        minutes: 2
 
     - name: Check admin password for awx gui
       ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
