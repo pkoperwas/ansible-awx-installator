@@ -54,7 +54,7 @@
 
     - name: Waitng 2 minutes for deployment...
       ansible.builtin.pause:
-        minutes: 2
+        minutes: 3
 
     - name: Check admin password for awx gui
       ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
@@ -65,3 +65,4 @@
         msg: 
           - "You have to set fake DNS name tower in your /etc/hosts to your linux IP" 
           - "Please open your browser and go to the site http://ansible.local/#/login login: admin + password: {{ passwd_output.stdout }}"          
+          - "If page doesn't load and there's bad gateway info its a good sign, you have to wait a few minutes for final deployment"
