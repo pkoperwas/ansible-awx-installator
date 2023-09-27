@@ -1,4 +1,5 @@
-# Ansible AWX installation (AWX Operator 2.6.0 & AWX 23.2.0) based on Lightweight Kubernetes k3s engine
+# Ansible AWX installation 
+## AWX Operator 2.6.0 & AWX 23.2.0 based on Lightweight Kubernetes k3s engine
 
 Tested on RHEL9
 
