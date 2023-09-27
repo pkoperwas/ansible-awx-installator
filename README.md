@@ -16,6 +16,3 @@ cd Ansible-AWX-installator
 
 ansible-playbook install_awx.yml 
 
-
-
-![Screenshot](awx-info.png)
