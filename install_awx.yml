@@ -39,28 +39,35 @@
     - name: Make deploy awx-operator
       ansible.builtin.raw: export NAMESPACE=awx && cd /root/awx-operator && make deploy
 
-    - name: Waitng 3 minutes for awx deployment
+    - name: Waitng 3 minutes for deployment...
       ansible.builtin.pause:
         minutes: 3
 
     - name: Create Static data PVC
-      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/public-static-pvc.yaml -n awx
+      ansible.builtin.raw: kubectl apply -f public-static-pvc.yaml -n awx
 
     - name: Create AWX Instance deployment 
-      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-instance-deployment.yml -n awx
+      ansible.builtin.raw: kubectl apply -f awx-instance-deployment.yml -n awx
 
     - name: Replace AWX logo to Ansible Automation Platform
-      ansible.builtin.raw: curl -sfL https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx2tower.sh | sh -s -
+      ansible.builtin.raw: curl -sfL awx-installator/main/awx2tower.sh | sh -s -
 
     - name: Modify traefik instance for ingresss traffic http vhost tower
-      ansible.builtin.raw: kubectl apply -f https://raw.githubusercontent.com/pkoperwas/awx-installator/main/awx-traefik-ingress.yml        
+      ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
+
+    - name: Install ansible.posix for firewalld module
+      ansible.builtin.raw: ansible-galaxy collection install ansible.posix
 
     - name: Open http port on  Firewalld
-      firewalld:
-        port: 80/tcp
-        permanent: yes
-        immediate: yes
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        immediate: true
         state: enabled
+
+    - name: Waitng 3 minutes for deployment...
+      ansible.builtin.pause:
+        minutes: 3
 
     - name: Check admin password for awx gui
       ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
@@ -70,4 +77,4 @@
       debug:
         msg: 
           - "You have to set fake DNS name tower in your /etc/hosts to your linux IP" 
-          - "Please open your browser and go to the site http://tower/#/login login: admin + password: {{ passwd_output.stdout }}"          
+          - "Please open your browser and go to the site http://ansible/#/login login: admin + password: {{ passwd_output.stdout }}"          
