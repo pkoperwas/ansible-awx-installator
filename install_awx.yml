@@ -49,7 +49,7 @@
     - name: Replace AWX logo to Ansible Automation Platform
       ansible.builtin.raw: sh awx2tower.sh
 
-    - name: Modify traefik instance for ingresss traffic http vhost tower
+    - name: Modify traefik instance for ingresss traffic http vhost http://ansible.local/
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
 
     - name: Waiting 2 minutes for deployment...
