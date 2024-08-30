@@ -46,9 +46,6 @@
     - name: Create AWX Instance deployment 
       ansible.builtin.raw: kubectl apply -f awx-instance-deployment.yml -n awx
 
-    - name: Replace AWX logo to Ansible Automation Platform
-      ansible.builtin.raw: sh awx2tower.sh
-
     - name: Modify traefik instance for ingresss traffic http vhost http://ansible.local/
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
 
@@ -56,6 +53,9 @@
       ansible.builtin.pause:
         minutes: 5
 
+    - name: Replace AWX logo to Ansible Automation Platform
+      ansible.builtin.raw: sh awx2tower.sh
+      
     - name: Check admin password for awx gui
       ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
       register: passwd_output
