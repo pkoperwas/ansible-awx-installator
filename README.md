@@ -13,3 +13,4 @@ ansible-playbook install_awx.yml
 
 ![Screenshot](awx.png)
 ![Screenshot](awx2.png)
+![Screenshot](awx3.png)
