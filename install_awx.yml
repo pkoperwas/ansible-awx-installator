@@ -36,9 +36,9 @@
     - name: Make deploy awx-operator
       ansible.builtin.raw: export NAMESPACE=awx && cd /root/awx-operator && make deploy
 
-    - name: Waiting 3 minutes for deployment...
+    - name: Waiting 5 minutes for deployment...
       ansible.builtin.pause:
-        minutes: 3
+        minutes: 5
 
     - name: Create Static data PVC
       ansible.builtin.raw: kubectl apply -f public-static-pvc.yaml -n awx
@@ -52,9 +52,9 @@
     - name: Modify traefik instance for ingresss traffic http vhost http://ansible.local/
       ansible.builtin.raw: kubectl apply -f awx-traefik-ingress.yml        
 
-    - name: Waiting 2 minutes for deployment...
+    - name: Waiting 5 minutes for deployment...
       ansible.builtin.pause:
-        minutes: 3
+        minutes: 5
 
     - name: Check admin password for awx gui
       ansible.builtin.raw: kubectl -n awx get secret awx-admin-password -o jsonpath="{.data.password}" | base64 --decode
